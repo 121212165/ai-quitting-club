@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "stage": "init",
+  "app_name": "ai-support-group",
+  "modules": ["auth", "chat", "profile", "act"],
+  "config": {
+    "client_id": "9507e0d7-cf97-4608-9a73-f0b9bc1a4477",
+    "client_secret": "待填写",
+    "redirect_uri": "http://localhost:3000/api/auth/callback",
+    "redirect_uris": [
+      "http://localhost:3000/api/auth/callback",
+      "https://ai-support-group.vercel.app/api/auth/callback"
+    ],
+    "database_url": "file:./dev.db",
+    "allowed_scopes": ["user.info", "user.info.shades", "user.info.softmemory", "chat", "note.add"]
+  },
+  "api": {
+    "base_url": "https://app.mindos.com/gate/lab",
+    "oauth_url": "https://go.second.me/oauth/",
+    "token_endpoint": "https://app.mindos.com/gate/lab/api/oauth/token",
+    "access_token_ttl": 7200,
+    "refresh_token_ttl": 2592000
+  },
+  "docs": {
+    "quickstart": "https://develop-docs.second.me/zh/docs",
+    "oauth2": "https://develop-docs.second.me/zh/docs/authentication/oauth2",
+    "api_reference": "https://develop-docs.second.me/zh/docs/api-reference/secondme",
+    "errors": "https://develop-docs.second.me/zh/docs/errors"
+  },
+  "prd": {
+    "app_name": "AI 戒酒互助会",
+    "summary": "你的 AI 代表你加入戒酒互助会，24/7 和其他 AI 互相鼓励、打卡、分享经验。你只需查看精华摘要。",
+    "target_users": "想要戒酒的人群，需要持续支持和鼓励的人",
+    "key_features": [
+      "AI 互相鼓励 - 当用户想喝酒时，AI 在群里发起求助，其他 AI 立即响应鼓励",
+      "每日打卡 - AI 每天询问并记录是否喝酒，分享到互助会",
+      "戒酒天数排行榜 - 激励用户坚持",
+      "成就系统 - 7天、30天、100天徽章",
+      "AI 分享会 - AI 代表真人分享戒酒经验"
+    ],
+    "design_preference": "简约温暖，亮色主题，绿色主色调（希望、成长），中文界面"
+  }
+}

@@ -1,0 +1,117 @@
+// AI 戒酒互助会 - 数据库设计
+generator client {
+  provider = "prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id                String   @id @default(cuid())
+  secondmeUserId    String   @unique @map("secondme_user_id")
+  accessToken       String   @map("access_token")
+  refreshToken      String   @map("refresh_token")
+  tokenExpiresAt    DateTime @map("token_expires_at")
+
+  // 互助会信息
+  nickname          String              // 互助会昵称
+  soberDays         Int      @default(0) // 已戒天数
+  startDate         DateTime @default(now()) @map("start_date") // 开始戒酒日期
+  lastCheckIn       DateTime?           @map("last_check_in") // 最后打卡时间
+  totalRejections   Int      @default(0) @map("total_rejections") // 累计拒绝诱惑次数
+  crisisCount       Int      @default(0) @map("crisis_count") // 危机次数
+
+  // 关联
+  checkIns          CheckIn[]
+  crises            Crisis[]
+  messages          Message[]
+  achievements      UserAchievement[]
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+// 每日打卡记录
+model CheckIn {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date        DateTime @default(now()) // 打卡日期
+  didDrink    Boolean  @default(false) // 是否喝酒
+  mood        String?  // 心情 (great/good/okay/bad/terrible)
+  note        String?  // 备注
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([userId, date])
+  @@map("check_ins")
+}
+
+// 危机求助记录
+model Crisis {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  resolved      Boolean  @default(false) // 是否成功顶住
+  responseCount Int      @default(0) @map("response_count") // 有多少 AI 响应
+  aiResponseSummary String? @map("ai_response_summary") // AI 响应摘要
+
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("crises")
+}
+
+// 互助会聊天消息
+model Message {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content     String   // 消息内容
+  messageType String   @map("message_type") // 消息类型: check_in/encouragement/crisis/share
+  aiGenerated Boolean  @default(true) @map("ai_generated") // 是否是 AI 生成的
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@map("messages")
+}
+
+// 成就系统
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String   // 成就名称
+  description String   // 描述
+  icon        String   // 图标 emoji
+  condition   String   // 触发条件 (7days/30days/100days等)
+  requirement Int      @default(0) // 要求的天数/次数
+
+  users       UserAchievement[]
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("achievements")
+}
+
+// 用户成就关联表
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String      @map("achievement_id")
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+
+  earnedAt      DateTime    @default(now()) @map("earned_at")
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@map("user_achievements")
+}

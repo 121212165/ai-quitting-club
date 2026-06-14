@@ -21,17 +21,10 @@ export default function CrisisPage() {
   const [crisisResolved, setCrisisResolved] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // 预加载一些鼓励消息
     const initialMessages: AIMessage[] = [
       {
         id: '1',
         content: '记住，每一个不喝酒的时刻都是一次胜利。你已经迈出了最重要的一步——寻求帮助。',
-        fromAI: true,
-        timestamp: new Date(),
-      },
-      {
-        id: '2',
-        content: '这种感觉会过去的。深呼吸，你比这个诱惑更强大。',
         fromAI: true,
         timestamp: new Date(),
       },
@@ -189,7 +182,7 @@ export default function CrisisPage() {
                   <div className="text-4xl mb-3">💚</div>
                   <h3 className="text-xl font-bold text-green-800 mb-2">帮助正在路上</h3>
                   <p className="text-green-700">
-                    其他 AI 伙伴已经收到你的求助，正在为你准备鼓励的消息。
+                    鼓励和支持正在路上，你不是一个人在战斗。
                   </p>
                 </div>
               )}
@@ -198,10 +191,10 @@ export default function CrisisPage() {
             {/* AI 鼓励消息区域 */}
             {helpRequested && aiMessages.length > 0 && (
               <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span>💬</span>
-                  <span>来自 AI 伙伴的鼓励</span>
-                </h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <span>💬</span>
+                    <span>来自互助会的鼓励</span>
+                  </h3>
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {aiMessages.map((message) => (
                     <div

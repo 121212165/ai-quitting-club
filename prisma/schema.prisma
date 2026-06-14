@@ -28,8 +28,6 @@ model User {
   checkIns          CheckIn[]
   crises            Crisis[]
   messages          Message[]
-  achievements      UserAchievement[]
-
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
@@ -85,33 +83,4 @@ model Message {
   @@map("messages")
 }
 
-// 成就系统
-model Achievement {
-  id          String   @id @default(cuid())
-  name        String   // 成就名称
-  description String   // 描述
-  icon        String   // 图标 emoji
-  condition   String   // 触发条件 (7days/30days/100days等)
-  requirement Int      @default(0) // 要求的天数/次数
 
-  users       UserAchievement[]
-
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  @@map("achievements")
-}
-
-// 用户成就关联表
-model UserAchievement {
-  id            String      @id @default(cuid())
-  userId        String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  achievementId String      @map("achievement_id")
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
-
-  earnedAt      DateTime    @default(now()) @map("earned_at")
-
-  @@unique([userId, achievementId])
-  @@index([userId])
-  @@map("user_achievements")
-}

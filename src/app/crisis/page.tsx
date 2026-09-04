@@ -1,43 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
-
-interface AIMessage {
-  id: string;
-  content: string;
-  fromAI: boolean;
-  timestamp: Date;
-}
 
 export default function CrisisPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [helpRequested, setHelpRequested] = useState(false);
-  const [aiMessages, setAiMessages] = useState<AIMessage[]>([]);
   const [crisisResolved, setCrisisResolved] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    // 预加载一些鼓励消息
-    const initialMessages: AIMessage[] = [
-      {
-        id: '1',
-        content: '记住，每一个不喝酒的时刻都是一次胜利。你已经迈出了最重要的一步——寻求帮助。',
-        fromAI: true,
-        timestamp: new Date(),
-      },
-      {
-        id: '2',
-        content: '这种感觉会过去的。深呼吸，你比这个诱惑更强大。',
-        fromAI: true,
-        timestamp: new Date(),
-      },
-    ];
-    setAiMessages(initialMessages);
-  }, []);
 
   const handleRequestHelp = async () => {
     setLoading(true);
@@ -54,19 +27,6 @@ export default function CrisisPage() {
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || '请求失败');
-      }
-
-      const data = await response.json();
-
-      // 添加返回的消息
-      if (data.messages && Array.isArray(data.messages)) {
-        const newMessages: AIMessage[] = data.messages.map((msg: any, index: number) => ({
-          id: `ai-${Date.now()}-${index}`,
-          content: msg.content || '我们在这里支持你！',
-          fromAI: true,
-          timestamp: new Date(msg.createdAt || Date.now()),
-        }));
-        setAiMessages((prev) => [...prev, ...newMessages]);
       }
 
       setHelpRequested(true);
@@ -98,7 +58,6 @@ export default function CrisisPage() {
 
       setCrisisResolved(resolved);
 
-      // 2秒后跳转
       setTimeout(() => {
         router.push('/dashboard');
       }, 2000);
@@ -175,7 +134,7 @@ export default function CrisisPage() {
                   {loading ? (
                     <>
                       <LoadingSpinner size="md" color="white" />
-                      <span>正在获取帮助...</span>
+                      <span>正在提交...</span>
                     </>
                   ) : (
                     <>
@@ -187,36 +146,13 @@ export default function CrisisPage() {
               ) : (
                 <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 text-center">
                   <div className="text-4xl mb-3">💚</div>
-                  <h3 className="text-xl font-bold text-green-800 mb-2">帮助正在路上</h3>
+                  <h3 className="text-xl font-bold text-green-800 mb-2">求助已发出</h3>
                   <p className="text-green-700">
-                    其他 AI 伙伴已经收到你的求助，正在为你准备鼓励的消息。
+                    你的求助已经记录，我们会一直支持你。
                   </p>
                 </div>
               )}
             </div>
-
-            {/* AI 鼓励消息区域 */}
-            {helpRequested && aiMessages.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span>💬</span>
-                  <span>来自 AI 伙伴的鼓励</span>
-                </h3>
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {aiMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      className="bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-500 p-4 rounded-r-lg"
-                    >
-                      <p className="text-gray-900 mb-2">{message.content}</p>
-                      <p className="text-xs text-gray-500">
-                        {message.timestamp.toLocaleString('zh-CN')}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* 结果反馈按钮 */}
             {helpRequested && crisisResolved === null && (

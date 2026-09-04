@@ -1,5 +1,5 @@
 /**
- * Second Me API 工具函数
+ * Second Me API — 仅保留实际使用的功能
  */
 
 const API_BASE_URL = process.env.SECONDME_API_BASE_URL || 'https://app.mindos.com/gate/lab';
@@ -8,12 +8,8 @@ const CLIENT_SECRET = process.env.SECONDME_CLIENT_SECRET;
 
 /**
  * 通用 API 调用函数
- * @param token Access token
- * @param endpoint API 端点
- * @param options Fetch 选项
- * @returns API 响应数据
  */
-export async function callSecondMeAPI<T = any>(
+export async function callSecondMeAPI<T = unknown>(
   token: string,
   endpoint: string,
   options: RequestInit = {}
@@ -45,8 +41,6 @@ export async function callSecondMeAPI<T = any>(
 
 /**
  * 刷新 access token
- * @param refreshToken Refresh token
- * @returns 新的 token 信息或 null
  */
 export async function refreshAccessToken(
   refreshToken: string
@@ -82,77 +76,4 @@ export async function refreshAccessToken(
     console.error('刷新 token 异常:', error);
     return null;
   }
-}
-
-/**
- * 获取用户信息
- * @param token Access token
- * @returns 用户信息或 null
- */
-export async function getUserInfo(token: string) {
-  return callSecondMeAPI(token, '/api/secondme/user/info');
-}
-
-/**
- * 调用 AI 聊天
- * @param token Access token
- * @param message 用户消息
- * @returns AI 响应
- */
-export async function callAI(token: string, message: string) {
-  return callSecondMeAPI(token, '/api/secondme/chat/completions', {
-    method: 'POST',
-    body: JSON.stringify({
-      message,
-    }),
-  });
-}
-
-/**
- * 调用 AI 动作判断
- * 用于判断用户是否需要帮助
- * @param token Access token
- * @param actionControl 动作控制参数
- * @returns AI 判断结果
- */
-export async function callAIAct(token: string, actionControl: string) {
-  return callSecondMeAPI(token, '/api/secondme/act', {
-    method: 'POST',
-    body: JSON.stringify({
-      actionControl,
-    }),
-  });
-}
-
-/**
- * 添加笔记
- * @param token Access token
- * @param content 笔记内容
- * @returns 结果
- */
-export async function addNote(token: string, content: string) {
-  return callSecondMeAPI(token, '/api/secondme/note/add', {
-    method: 'POST',
-    body: JSON.stringify({
-      content,
-    }),
-  });
-}
-
-/**
- * 获取用户的 Shades 数据（情感数据）
- * @param token Access token
- * @returns Shades 数据
- */
-export async function getShades(token: string) {
-  return callSecondMeAPI(token, '/api/secondme/user/info/shades');
-}
-
-/**
- * 获取用户的 SoftMemory 数据（记忆数据）
- * @param token Access token
- * @returns SoftMemory 数据
- */
-export async function getSoftMemory(token: string) {
-  return callSecondMeAPI(token, '/api/secondme/user/info/softmemory');
 }

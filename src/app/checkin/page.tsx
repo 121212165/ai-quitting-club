@@ -50,7 +50,6 @@ export default function CheckInPage() {
         body: JSON.stringify({
           mood,
           note: note.trim() || null,
-          didDrink: false, // 默认为没有喝酒
         }),
       });
 

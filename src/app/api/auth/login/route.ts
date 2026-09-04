@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const clientId = process.env.SECONDME_CLIENT_ID;
   const redirectUri = process.env.SECONDME_REDIRECT_URI;
   const oauthUrl = process.env.SECONDME_OAUTH_URL;

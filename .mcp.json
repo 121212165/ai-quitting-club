@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "pencil": {
+      "command": "c:\\Users\\lenovo\\.vscode\\extensions\\highagency.pencildev-0.6.49\\out\\mcp-server-windows-x64.exe",
+      "args": ["--app", "visual_studio_code"],
+      "autoApprove": ["get_editor_state", "batch_design"]
+    }
+  }
+}

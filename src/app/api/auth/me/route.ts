@@ -1,13 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
+import { NextResponse } from 'next/server';
+import { withAuth } from '@/lib/api-handler';
 
-export async function GET(request: NextRequest) {
-  const user = await requireAuth();
-
-  if (!user) {
-    return NextResponse.json({ error: '未登录' }, { status: 401 });
-  }
-
+export const GET = withAuth(async ({ user }) => {
   return NextResponse.json({
     user: {
       id: user.id,
@@ -15,4 +9,4 @@ export async function GET(request: NextRequest) {
       soberDays: user.soberDays,
     },
   });
-}
+});
